@@ -12,4 +12,4 @@ sockets.o:
 	gcc -c sockets.c
 
 clean:
-	del *.o *.exe
+	rm *.o *.exe server client
