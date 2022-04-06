@@ -62,13 +62,47 @@ int main(int argc, char* argv[]){
     socklen_t addr_size = sizeof(their_addr);
     int new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &addr_size);
     
-    // 4. Escribir y recibir datos del cliente, por medio de las funciones write() y read(), 
+    // 4. Escribir y recibir datos del cliente, por medio de las funciones send() y recv(), 
     // que son exactamente las mismas que usamos para escribir o leer de un fichero. 
     // Obviamente, tanto cliente como servidor deben saber qué datos esperan recibir, qué datos deben enviar y en qué formato. 
     // Puedes ver cómo se pueden poner de acuerdo en estos mensajes en el apartado de mensajes.
 
+    char msg[MAX_BUFF_LENGTH], buff[MAX_BUFF_LENGTH];
+    int receivedBytes, i = 0, sentBytes;
+
+    while(1){
+        memset(msg, 0, sizeof(buff));
+
+        receivedBytes = recv(sockfd, buff, MAX_BUFF_LENGTH, 0);
+        char *serverResponse;
+        if( !strcmp(buff, "Hola rey") ){
+            strcpy(serverResponse, "230");
+        } else if ( !strcmp(buff, "quit") ){
+            strcpy(serverResponse,"221");
+        } else {
+            strcpy(serverResponse, "");
+        }
+
+        if (receivedBytes < 0) {
+            fprintf(stderr,"Error: %s\n", gai_strerror(receivedBytes));
+            return -1;
+        }
+    
+        printf("Client message: %s", buff);
+
+        if( i == 0){
+            sentBytes = send(sockfd, serverResponse,strlen(serverResponse),0);
+            
+            if(loginUsername("db.txt", buff))
+                i++; 
+        } else if(i == 1){
+            
+        }
+
+    }
 
 
+    // 5. Cierre de la comunicación y del socket, por medio de la función close(), que es la misma que sirve para cerrar un fichero.
 
     
     

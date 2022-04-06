@@ -4,7 +4,7 @@
 
 all: program
 
-program: server.c client.c  sockets.c sockets.h sockets.o
+program: server.c client.c  sockets.c sockets.h sockets.o db.txt
 	gcc -o server server.c sockets.o
 	gcc -o client client.c sockets.o
 

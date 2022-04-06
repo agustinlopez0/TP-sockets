@@ -6,7 +6,6 @@
 #include <sys/socket.h>
 #include <netdb.h>
 
-
 #include "sockets.h"
 
 
@@ -47,7 +46,45 @@ int main(int argc, char* argv[]){
         return -1;
     }
 
+    // 3. Escribir y recibir datos del servidor por medio de las funciones send() y recv().
 
+
+    char msg[MAX_BUFF_LENGTH], buff[MAX_BUFF_LENGTH];
+    int sentBytes, i = 0, r;
+    
+    while(1){
+        switch( i ){
+            case 0:
+                strcpy(msg, "Hola rey");
+                break;
+            case 1:
+                printf(("Ingrese el nombre de usuario: "));
+                scanf("%[^\n]", msg);
+                getchar();
+                break;
+            case 2:
+                printf(("Ingrese su contraseña: "));
+                scanf("%[^\n]", msg);
+                getchar();
+                break;
+            default: 
+                memset(msg, 0, sizeof(msg));
+                printf("Ingresar el mensaje a enviar: ");
+                scanf("%[^\n]", msg);
+        }
+
+        i++;
+        
+        sentBytes = send(sockfd, msg, strlen(msg), 0);
+
+        if(sentBytes < 0){
+            fprintf(stderr, "Error %s\n", gai_strerror(sentBytes));
+            return -1;
+        }
+        
+    }
+
+    //4. Cerrar la comunicación por medio de close().
 
 
 
