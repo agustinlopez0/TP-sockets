@@ -36,6 +36,8 @@ int main(int argc, char* argv[]){
     if (status != 0) {
         fprintf(stderr, "Error: %s\n", gai_strerror(status));
         return 2;
+    } else {
+        printf("Get address info successful\n");
     }
 
     sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
@@ -49,6 +51,8 @@ int main(int argc, char* argv[]){
     if (bindStatus < 0) {
         fprintf(stderr,"Error: %s\n", gai_strerror(bindStatus));
         return 2;
+    } else {
+        printf("Bind successful\n");
     }
 
     // 3. Pedir y aceptar las conexiones de clientes al sistema operativo. 
@@ -57,41 +61,54 @@ int main(int argc, char* argv[]){
     // Si no hay clientes se quedará bloqueada hasta que algún cliente se conecte.
 
     listen(sockfd, BACKLOG);
-    printf("Listening...\n");
+    printf("Listening on port %s...\n", argv[1]);
 
     socklen_t addr_size = sizeof(their_addr);
+    
+
     int new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &addr_size);
     
+    if (new_fd < 0) {
+        fprintf(stderr,"Error: %s\n", gai_strerror(new_fd));
+        return 2;
+    } else {
+        printf("Accept succesful\n");
+    }
+
     // 4. Escribir y recibir datos del cliente, por medio de las funciones send() y recv(), 
     // que son exactamente las mismas que usamos para escribir o leer de un fichero. 
     // Obviamente, tanto cliente como servidor deben saber qué datos esperan recibir, qué datos deben enviar y en qué formato. 
     // Puedes ver cómo se pueden poner de acuerdo en estos mensajes en el apartado de mensajes.
 
     char msg[MAX_BUFF_LENGTH], buff[MAX_BUFF_LENGTH];
-    int receivedBytes, i = 0, sentBytes;
+    memset(&buff, 0, sizeof(buff));
+    memset(&msg, 0, sizeof(msg));
 
+    int receivedBytes, i = 0, sentBytes;
     while(1){
         memset(msg, 0, sizeof(buff));
-
-        receivedBytes = recv(sockfd, buff, MAX_BUFF_LENGTH, 0);
-        char *serverResponse;
+        receivedBytes = recv(new_fd, buff, MAX_BUFF_LENGTH, 0);
+        
+        char serverResponse[MAX_BUFF_LENGTH];
+        
         if( !strcmp(buff, "Hola rey") ){
             strcpy(serverResponse, "230");
         } else if ( !strcmp(buff, "quit") ){
             strcpy(serverResponse,"221");
         } else {
-            strcpy(serverResponse, "");
+            strcpy(serverResponse, "2300");
         }
-
-        if (receivedBytes < 0) {
+        
+        if (receivedBytes < 0) {+
             fprintf(stderr,"Error: %s\n", gai_strerror(receivedBytes));
             return -1;
+        } else {
+            printf("Client message: %s\n", buff);
         }
     
-        printf("Client message: %s", buff);
 
         if( i == 0){
-            sentBytes = send(sockfd, serverResponse,strlen(serverResponse),0);
+            sentBytes = send(new_fd, serverResponse, strlen(serverResponse), 0);
             
             if(loginUsername("db.txt", buff))
                 i++; 
@@ -103,7 +120,8 @@ int main(int argc, char* argv[]){
 
 
     // 5. Cierre de la comunicación y del socket, por medio de la función close(), que es la misma que sirve para cerrar un fichero.
-
+    // close(sockfd);
+    // close(new_fd);
     
     
     return 0;

@@ -31,6 +31,8 @@ int main(int argc, char* argv[]){
     if (status != 0) {
         fprintf(stderr, "Error: %s\n", gai_strerror(status));
         return 2;
+    } else {
+        printf("Get address info successful\n");
     }
 
     sockfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
@@ -44,14 +46,18 @@ int main(int argc, char* argv[]){
     if(connectStatus == -1){
         fprintf(stderr,"Error %s\n", gai_strerror(connectStatus));
         return -1;
+    } else {
+        printf("Connect successful\n");
     }
 
     // 3. Escribir y recibir datos del servidor por medio de las funciones send() y recv().
 
 
     char msg[MAX_BUFF_LENGTH], buff[MAX_BUFF_LENGTH];
-    int sentBytes, i = 0, r;
-    
+    // char *msg = "HOLA REY";
+
+    int sentBytes, receivedBytes, i = 0, r;
+
     while(1){
         switch( i ){
             case 0:
@@ -77,10 +83,18 @@ int main(int argc, char* argv[]){
         
         sentBytes = send(sockfd, msg, strlen(msg), 0);
 
+        receivedBytes = recv(sockfd, buff, MAX_BUFF_LENGTH, 0);
+        
+        printf("Server response: %s\n\n", buff);
+
         if(sentBytes < 0){
             fprintf(stderr, "Error %s\n", gai_strerror(sentBytes));
             return -1;
+        } else {
+            printf("Mensaje enviado: %s\n", msg);
         }
+
+        
         
     }
 
