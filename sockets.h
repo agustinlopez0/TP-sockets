@@ -11,6 +11,4 @@ int loginUsername(char *file, char *user);
 
 
 
-
-
 #endif

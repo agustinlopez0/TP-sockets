@@ -89,17 +89,15 @@ int main(int argc, char* argv[]){
         printf("%i:\n", i);
         memset(buff, 0, sizeof(buff));
         char serverResponse[MAX_BUFF_LENGTH];
-        memset(msg, 0, sizeof(serverResponse));
         
         // mensaje recbido
         receivedBytes = recv(new_fd, buff, MAX_BUFF_LENGTH, 0);
-        if (receivedBytes < 0) {+
+        if (receivedBytes < 0) {
             fprintf(stderr,"Error: %s\n", gai_strerror(receivedBytes));
             return -1;
         } else {
             printf("\nClient message: %s\n", buff);
         }
-        
         
         if( i == 0){
             if( !strcmp(buff, "Hola rey") ){
@@ -110,6 +108,8 @@ int main(int argc, char* argv[]){
             if(loginUsername("db.txt", buff)){
                 strcpy(serverResponse, "230");
                 i++;
+            } else {
+                strcpy(serverResponse, "300");
             }
         } else {
             strcpy(serverResponse, "300");

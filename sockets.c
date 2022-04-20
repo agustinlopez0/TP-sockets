@@ -5,8 +5,9 @@
 
 int loginUsername(char *file, char* user){
 
-    if(!strcmp(user, "schujman"))
+    if( strcmp("schujman", user) == 0 ){
         return 1;
+    }
 
     return 0;
 }
