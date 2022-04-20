@@ -86,35 +86,45 @@ int main(int argc, char* argv[]){
 
     int receivedBytes, i = 0, sentBytes;
     while(1){
-        memset(msg, 0, sizeof(buff));
-        receivedBytes = recv(new_fd, buff, MAX_BUFF_LENGTH, 0);
-        
+        printf("%i:\n", i);
+        memset(buff, 0, sizeof(buff));
         char serverResponse[MAX_BUFF_LENGTH];
+        memset(msg, 0, sizeof(serverResponse));
         
-        if( !strcmp(buff, "Hola rey") ){
-            strcpy(serverResponse, "230");
-        } else if ( !strcmp(buff, "quit") ){
-            strcpy(serverResponse,"221");
-        } else {
-            strcpy(serverResponse, "2300");
-        }
-        
+        // mensaje recbido
+        receivedBytes = recv(new_fd, buff, MAX_BUFF_LENGTH, 0);
         if (receivedBytes < 0) {+
             fprintf(stderr,"Error: %s\n", gai_strerror(receivedBytes));
             return -1;
         } else {
-            printf("Client message: %s\n", buff);
+            printf("\nClient message: %s\n", buff);
         }
-    
-
+        
+        
         if( i == 0){
-            sentBytes = send(new_fd, serverResponse, strlen(serverResponse), 0);
-            
-            if(loginUsername("db.txt", buff))
-                i++; 
-        } else if(i == 1){
-            
+            if( !strcmp(buff, "Hola rey") ){
+                strcpy(serverResponse, "230");
+                i++;
+            }
+        } else if( i == 1){    
+            if(loginUsername("db.txt", buff)){
+                strcpy(serverResponse, "230");
+                i++;
+            }
+        } else {
+            strcpy(serverResponse, "300");
         }
+        
+        // mensaje enviado 
+        sentBytes = send(new_fd, serverResponse, strlen(serverResponse), 0);
+        if(sentBytes < 0){
+            fprintf(stderr, "Error %s\n", gai_strerror(sentBytes));
+            return -1;
+        } else {
+            printf("Server response: %s\n", serverResponse);
+        }
+
+
 
     }
 

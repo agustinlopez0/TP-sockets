@@ -59,6 +59,10 @@ int main(int argc, char* argv[]){
     int sentBytes, receivedBytes, i = 0, r;
 
     while(1){
+        memset(buff, 0, sizeof(buff));
+        memset(buff, 0, sizeof(msg));
+        printf("%i:\n", i);
+
         switch( i ){
             case 0:
                 strcpy(msg, "Hola rey");
@@ -79,23 +83,30 @@ int main(int argc, char* argv[]){
                 scanf("%[^\n]", msg);
         }
 
-        i++;
-        
+        // mensaje enviado 
         sentBytes = send(sockfd, msg, strlen(msg), 0);
-
-        receivedBytes = recv(sockfd, buff, MAX_BUFF_LENGTH, 0);
-        
-        printf("Server response: %s\n\n", buff);
-
         if(sentBytes < 0){
             fprintf(stderr, "Error %s\n", gai_strerror(sentBytes));
             return -1;
         } else {
-            printf("Mensaje enviado: %s\n", msg);
+            printf("\nMensaje enviado: %s\n", msg);
+        }
+        
+        // mensaje recibido
+        receivedBytes = recv(sockfd, buff, MAX_BUFF_LENGTH, 0);
+        if (receivedBytes < 0) {
+            fprintf(stderr,"Error: %s\n", gai_strerror(receivedBytes));
+            return -1;
+        } else {
+            printf("Server response: %s\n", buff);
         }
 
-        
-        
+
+        if( !strcmp(buff, "230" ) ){
+            i++;
+        }
+
+
     }
 
     //4. Cerrar la comunicación por medio de close().
