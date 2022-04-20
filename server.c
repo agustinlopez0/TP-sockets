@@ -111,7 +111,14 @@ int main(int argc, char* argv[]){
             } else {
                 strcpy(serverResponse, "300");
             }
-        } else {
+        } else if ( i == 2) 
+            if(loginPassword("db.txt", buff)){
+                strcpy(serverResponse, "230");
+                i++;
+            } else {
+                strcpy(serverResponse, "300");
+            }
+        } else{
             strcpy(serverResponse, "300");
         }
         

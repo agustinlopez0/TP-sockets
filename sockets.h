@@ -6,6 +6,7 @@
 #define MAX_BUFF_LENGTH 100
 
 int loginUsername(char *file, char *user);
+int loginPassword(char *file, char *pass);
 
 
 

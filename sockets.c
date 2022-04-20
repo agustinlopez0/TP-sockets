@@ -11,6 +11,15 @@ int loginUsername(char *file, char* user){
 
     return 0;
 }
+
+int loginPassword(char *file, char* pass){
+
+    if( strcmp("contrasena", pass) == 0 ){
+        return 1;
+    }
+
+    return 0;
+}
 // int loginUsername(char *file, char* user){
 
 //     FILE* fp = fopen(file, "r");
